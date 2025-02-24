@@ -6,26 +6,25 @@
     <title>AI Warehouse Tracker</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        .warehouse-map { max-width: 800px; width: 100%; }
+        .section-buttons { margin: 20px; }
+        button { padding: 10px; font-size: 18px; margin: 5px; background: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
         .inventory-list { margin-top: 20px; padding: 10px; max-width: 600px; margin: auto; background: #f9f9f9; text-align: left; border: 1px solid #ccc; }
-        button { margin-top: 10px; padding: 10px; font-size: 16px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
-    <h1>📍 AI Warehouse Tracker</h1>
-    <p>Click a section on the map or use voice input.</p>
+    <h1>📦 AI Warehouse Tracker</h1>
+    <p>Select an area, then use voice input to add inventory.</p>
 
-    <!-- Warehouse Map -->
-    <img src="warehouse-map.png" usemap="#warehouseMap" class="warehouse-map" alt="Warehouse Map">
-
-    <map name="warehouseMap">
-        <area shape="rect" coords="50,50,200,200" alt="Receiving Area" onclick="selectLocation('Receiving Area')">
-        <area shape="rect" coords="250,50,400,200" alt="Storage Racks" onclick="selectLocation('Storage Racks')">
-        <area shape="rect" coords="50,250,200,400" alt="Shipping Area" onclick="selectLocation('Shipping Area')">
-        <area shape="rect" coords="250,250,400,400" alt="Yard" onclick="selectLocation('Yard')">
-    </map>
+    <!-- Warehouse Area Buttons -->
+    <div class="section-buttons">
+        <button onclick="selectLocation('Receiving Area')">Receiving Area</button>
+        <button onclick="selectLocation('Finished Goods Storage')">Finished Goods Storage</button>
+        <button onclick="selectLocation('Shipping Dock')">Shipping Dock</button>
+        <button onclick="selectLocation('Assembly Area')">Assembly Area</button>
+        <button onclick="selectLocation('Chemical Storage')">Chemical Storage</button>
+    </div>
 
     <h2 id="selectedLocation">📍 Selected Location: None</h2>
     <button onclick="startListening()">🎙️ Speak Inventory</button>
@@ -58,4 +57,46 @@
                 let spokenText = event.results[0][0].transcript.toLowerCase();
                 processInventory(spokenText);
             };
+
+            recognition.onerror = function(event) {
+                alert("Speech not recognized. Try again.");
+            };
+        }
+
+        function processInventory(input) {
+            let words = input.split(",");
+            words.forEach(itemEntry => {
+                let parts = itemEntry.trim().split(" ");
+                let quantity = parseInt(parts[0]);
+                let itemName = parts.slice(1).join(" ");
+
+                if (!quantity || !itemName) {
+                    alert("Say a number followed by an item name.");
+                    return;
+                }
+
+                if (!inventory[selectedLocation]) inventory[selectedLocation] = {};
+                if (!inventory[selectedLocation][itemName]) inventory[selectedLocation][itemName] = 0;
+                
+                inventory[selectedLocation][itemName] += quantity;
+
+                updateInventoryList();
+            });
+        }
+
+        function updateInventoryList() {
+            let inventoryDiv = document.getElementById("inventoryList");
+            inventoryDiv.innerHTML = "";
+
+            for (let location in inventory) {
+                inventoryDiv.innerHTML += `<h4>📍 ${location}</h4>`;
+                for (let item in inventory[location]) {
+                    inventoryDiv.innerHTML += `<p>🛠️ ${inventory[location][item]} x ${item}</p>`;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
 
