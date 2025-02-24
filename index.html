@@ -3,33 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Warehouse Tracker</title>
+    <title>Inventory AI</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        .section-buttons { margin: 20px; }
-        button { padding: 10px; font-size: 18px; margin: 5px; background: #007BFF; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .inventory-list { margin-top: 20px; padding: 10px; max-width: 600px; margin: auto; background: #f9f9f9; text-align: left; border: 1px solid #ccc; }
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f4f4f4; }
+        .banner { background: #007BFF; color: white; font-size: 24px; padding: 15px; font-weight: bold; }
+        .section-buttons { margin: 20px; display: flex; flex-wrap: wrap; justify-content: center; }
+        button { padding: 15px; font-size: 18px; margin: 10px; width: 250px; border: none; background: #0056b3; color: white; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #003f7f; }
+        .ai-section { margin-top: 20px; }
+        input { padding: 10px; width: 300px; font-size: 16px; }
+        .inventory-list { margin-top: 20px; padding: 10px; max-width: 600px; margin: auto; background: white; text-align: left; border: 1px solid #ccc; }
+        .ai-btn { padding: 10px; margin: 5px; font-size: 16px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        .ai-btn:hover { background: #1f7a33; }
     </style>
 </head>
 <body>
 
-    <h1>📦 AI Warehouse Tracker</h1>
-    <p>Select an area, then use voice input to add inventory.</p>
+    <!-- Banner -->
+    <div class="banner">Inventory At It's Finest.</div>
 
-    <!-- Warehouse Area Buttons -->
+    <!-- Warehouse Section Buttons -->
     <div class="section-buttons">
-        <button onclick="selectLocation('Receiving Area')">Receiving Area</button>
-        <button onclick="selectLocation('Finished Goods Storage')">Finished Goods Storage</button>
-        <button onclick="selectLocation('Shipping Dock')">Shipping Dock</button>
-        <button onclick="selectLocation('Assembly Area')">Assembly Area</button>
-        <button onclick="selectLocation('Chemical Storage')">Chemical Storage</button>
+        <button onclick="selectLocation('Line One')">Line One</button>
+        <button onclick="selectLocation('Line Two')">Line Two</button>
+        <button onclick="selectLocation('Line Three')">Line Three</button>
+        <button onclick="selectLocation('Line Four')">Line Four</button>
+        <button onclick="selectLocation('Injection Area')">Injection Area</button>
+        <button onclick="selectLocation('Preform and CAP Area')">Preform and CAP Area</button>
+        <button onclick="selectLocation('Regrind Area')">Regrind Area</button>
+        <button onclick="selectLocation('Corrugate')">Corrugate</button>
+        <button onclick="selectLocation('Minerals and Glue Area')">Minerals and Glue Area</button>
+        <button onclick="selectLocation('The Receiving Area')">The Receiving Area</button>
     </div>
 
     <h2 id="selectedLocation">📍 Selected Location: None</h2>
-    <button onclick="startListening()">🎙️ Speak Inventory</button>
 
-    <h3>📝 Inventory List</h3>
+    <!-- AI Input -->
+    <div class="ai-section">
+        <h3>📝 Enter Inventory</h3>
+        <input type="text" id="manualInput" placeholder="Type item and quantity...">
+        <button class="ai-btn" onclick="processManualInput()">Submit</button>
+        <button class="ai-btn" onclick="startListening()">🎙️ Speak</button>
+        <button class="ai-btn" onclick="uploadImage()">📷 Picture Verification</button>
+    </div>
+
+    <h3>📋 Inventory List</h3>
     <div class="inventory-list" id="inventoryList">
         <p>No items recorded yet.</p>
     </div>
@@ -41,6 +59,16 @@
         function selectLocation(location) {
             selectedLocation = location;
             document.getElementById("selectedLocation").textContent = `📍 Selected Location: ${location}`;
+        }
+
+        function processManualInput() {
+            let inputText = document.getElementById("manualInput").value.trim();
+            if (!selectedLocation || inputText === "") {
+                alert("Select a location and enter an item!");
+                return;
+            }
+            processInventory(inputText);
+            document.getElementById("manualInput").value = "";
         }
 
         function startListening() {
@@ -94,6 +122,10 @@
                     inventoryDiv.innerHTML += `<p>🛠️ ${inventory[location][item]} x ${item}</p>`;
                 }
             }
+        }
+
+        function uploadImage() {
+            alert("📷 Picture verification is coming soon!");
         }
     </script>
 
